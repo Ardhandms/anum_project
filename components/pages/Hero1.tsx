@@ -2,7 +2,7 @@ import React from 'react'
 
 const Hero1 = () => {
   return (
-    <section className='border-2 border-red-500 md:gap-28 lg:py-20 '>
+    <section className='md:gap-28 lg:py-20 '>
 
       <div className='text-center'>
         <h1 className='bold-52 lg:bold-66'>Lorem anu anu anu</h1>

@@ -1,25 +1,17 @@
 import Image from "next/image"
 import Link from "next/link"
+import { Button } from "./ui/button"
 
 const Navbar = () => {
   return (
-    <nav className=" bg-gray-300 flexBetween max-container relative z-30 py-5">
-      <Link href={"/"}>
-        <Image src="/camp.svg" alt="logo" width={80} height={20} style={{marginLeft: '50px'}}/>
-      </Link>
-
-      <ul className="hidden h-full gap-12 lg:flex flex-grow justify-center" style={{marginTop: '20px'}}>
-        <Link href={"/"} className="regular-16 text-gray-50 flexCenter cursor-pointer pb-1.5 transition-all hover:font-bold">
-          Button
-        </Link>
-        <Link href={"/"} className="regular-16 text-gray-50 flexCenter cursor-pointer pb-1.5 transition-all hover:font-bold">
-          Button
-        </Link>
-      </ul>
-        <Link href={"/"} className="regular-16 text-gray-50 flexCenter cursor-pointer pb-1.5 transition-all hover:font-bold" style={{marginRight: '120px', marginTop: '20px'}}>
-          Button
-        </Link>
-    </nav>
+    <header className="w-full flex justify-between gap-10 px-10 py-4">
+      <div>
+        <h4 className="font-bold">Analisa Numerik</h4>
+      </div>
+      <div>
+        <Button variant="default">Mulai</Button>
+      </div>
+    </header>
   )
 }
 

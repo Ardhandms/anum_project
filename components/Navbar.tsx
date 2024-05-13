@@ -4,7 +4,7 @@ import { Button } from "./ui/button"
 
 const Navbar = () => {
   return (
-    <header className="w-full flex justify-between gap-10 px-4 sm:px-10 py-4">
+    <header className="fixed bg-background w-full flex justify-between gap-10 px-4 sm:px-10 py-4">
       <div>
         <h4 className="font-bold">Analisa Numerik</h4>
       </div>

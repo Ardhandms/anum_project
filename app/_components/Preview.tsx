@@ -18,13 +18,15 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Button } from "@/components/ui/button";
+import { VscLoading } from "react-icons/vsc";
 
 type PropTypes = {
   data: string[][];
   onClickCalculate: (data: string[][]) => void;
+  loading: boolean;
 }
 
-function Preview({ data, onClickCalculate }: PropTypes) {
+function Preview({ data, onClickCalculate, loading }: PropTypes) {
   const [header, ...rows] = data;
   return (
     <div className="space-y-3">
@@ -56,7 +58,7 @@ function Preview({ data, onClickCalculate }: PropTypes) {
         </Table>
       </div>
       <div className="w-full flex justify-end gap-4 pt-2">
-        <Select>
+        {/* <Select>
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Select a option" />
           </SelectTrigger>
@@ -70,8 +72,14 @@ function Preview({ data, onClickCalculate }: PropTypes) {
               <SelectItem value="pineapple">Option 5</SelectItem>
             </SelectGroup>
           </SelectContent>
-        </Select>
-        <Button onClick={() => onClickCalculate(data)}>Hitung</Button>
+        </Select> */}
+        <Button disabled={loading} className="gap-2" onClick={() => onClickCalculate(data)}>
+          {loading ? (
+            <>
+              <VscLoading className="animate-spin" /> Menghitung...
+            </>
+          ) : 'Hitung'}
+        </Button>
       </div>
     </div>
   )

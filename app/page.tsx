@@ -25,6 +25,7 @@ export default function Home() {
   const [csvData, setCSVData] = useState<any[]>([]);
   const [csvFile, setCSVFile] = useState<FileList[0] | undefined>();
   const [uploadLoading, setUploadLoading] = useState(false);
+  const [calculateLoading, setCalculateLoading] = useState(false);
   const [resultInterpolation, setResultInterpolation] = useState<ResultInterpolation | null>(null);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -52,48 +53,56 @@ export default function Home() {
   }
 
   const handleCalculate = (data: string[][]) => {
-    const [yLabels, ...newRows] = data.map((cell) => cell.filter((value) => value !== ''));
-    let rowsGroupByYLabels: RowsGroupByYLabelsType[] = [];
+    setCalculateLoading(true);
 
-    // Buat variabel
-    for (let i = 1; i < yLabels.length; i++) {
-      rowsGroupByYLabels.push({
-        label: yLabels[i],
-        data: [],
-      });
-    }
+    setTimeout(() => {
+      const [yLabels, ...newRows] = data.map((cell) => cell.filter((value) => value !== ''));
+      let rowsGroupByYLabels: RowsGroupByYLabelsType[] = [];
 
-    // Masukan data
-    newRows.forEach((cell, index) => {
-      for (let i = 0; i < rowsGroupByYLabels.length; i++) {
-        const [label, ...values] = cell;
-        rowsGroupByYLabels[i].data.push(+values[i]);
+      // Buat variabel
+      for (let i = 1; i < yLabels.length; i++) {
+        rowsGroupByYLabels.push({
+          label: yLabels[i],
+          data: [],
+        });
       }
-    });
 
-    // Hitung nilai rata rata
-    rowsGroupByYLabels = rowsGroupByYLabels.map((row) => ({
-      ...row,
-      mean: row.data.reduce((acc, cur) => acc + cur, 0) / row.data.length
-    }));
+      // Masukan data
+      newRows.forEach((cell, index) => {
+        for (let i = 0; i < rowsGroupByYLabels.length; i++) {
+          const [label, ...values] = cell;
+          rowsGroupByYLabels[i].data.push(+values[i]);
+        }
+      });
 
-    // Hitung interpolasi
-    const targetX = rowsGroupByYLabels.length + 1;
-    const xData = Array.from({ length: rowsGroupByYLabels.length }).map((_, index) => index + 1);
-    const yData = rowsGroupByYLabels.map((row) => row.mean!);
-    const result = lagrangeInterpolation(xData, yData, targetX);
+      // Hitung nilai rata rata
+      rowsGroupByYLabels = rowsGroupByYLabels.map((row) => ({
+        ...row,
+        mean: row.data.reduce((acc, cur) => acc + cur, 0) / row.data.length
+      }));
 
-    setResultInterpolation({
-      label: [...rowsGroupByYLabels.map((row) => row.label), `${targetX}`],
-      series: [...rowsGroupByYLabels.map((row) => row.mean!), result].map((value) => +Number(value).toFixed(2))
-    });
+      // Hitung interpolasi
+      const targetX = rowsGroupByYLabels.length + 1;
+      const targetXLabel = 'X';
+      const xData = Array.from({ length: rowsGroupByYLabels.length }).map((_, index) => index + 1);
+      const yData = rowsGroupByYLabels.map((row) => row.mean!);
+      const result = lagrangeInterpolation(xData, yData, targetX);
+
+      setResultInterpolation({
+        label: [...rowsGroupByYLabels.map((row) => row.label), `${targetXLabel}`],
+        series: [...rowsGroupByYLabels.map((row) => row.mean!), result].map((value) => +Number(value).toFixed(2))
+      });
+
+      setCalculateLoading(false);
+      toast.success('Data berhasil di interpolasikan!')
+    }, 2000)
   }
 
   return (
     <>
-      <div className="w-full grid grid-cols-2 gap-10">
+      <div className="w-full flex flex-col-reverse md:grid md:grid-cols-2 gap-10">
         <div className="space-y-4">
-          <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight text-center">
+          <h1 className="hidden md:block scroll-m-20 text-4xl font-extrabold tracking-tight text-center">
             Menghitung angka harapan hidup
           </h1>
           <div className="max-w-xl mx-auto space-y-4">
@@ -142,6 +151,7 @@ export default function Home() {
         <Preview
           data={csvData}
           onClickCalculate={handleCalculate}
+          loading={calculateLoading}
         />
       )}
       {uploadLoading && (

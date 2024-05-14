@@ -4,6 +4,9 @@ import React from 'react'
 function Documentation() {
   return (
     <div className="space-y-2">
+      <h1 className="md:hidden scroll-m-20 text-3xl font-extrabold tracking-tight text-center">
+        Menghitung angka harapan hidup
+      </h1>
       <div>
         <h1 className="text-lg font-semibold tracking-tight">
           Panduan Penggunaan:

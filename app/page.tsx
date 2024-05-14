@@ -37,6 +37,7 @@ export default function Home() {
 
   const handleSubmitData = () => {
     if (csvFile) {
+      setResultInterpolation(null);
       setUploadLoading(true);
       setTimeout(async () => {
         try {
@@ -52,7 +53,7 @@ export default function Home() {
     }
   }
 
-  const handleCalculate = (data: string[][]) => {
+  const handleCalculate = (data: string[][], totalInterpolation: number) => {
     setCalculateLoading(true);
 
     setTimeout(() => {
@@ -81,17 +82,29 @@ export default function Home() {
         mean: row.data.reduce((acc, cur) => acc + cur, 0) / row.data.length
       }));
 
-      // Hitung interpolasi
-      const targetX = rowsGroupByYLabels.length + 1;
-      const targetXLabel = 'X';
-      const xData = Array.from({ length: rowsGroupByYLabels.length }).map((_, index) => index + 1);
-      const yData = rowsGroupByYLabels.map((row) => row.mean!);
-      const result = lagrangeInterpolation(xData, yData, targetX);
+      Array
+        .from({ length: totalInterpolation })
+        .map((_, index) => index + 1)
+        .forEach((count) => {
+          console.log('ok');
+          // Hitung interpolasi
+          const targetX = rowsGroupByYLabels.length + 1;
+          const targetXLabel = `X${count}`;
+          const xData = Array.from({ length: rowsGroupByYLabels.length }).map((_, index) => index + 1);
+          const yData = rowsGroupByYLabels.map((row) => row.mean!);
+          const result = +Number(lagrangeInterpolation(xData, yData, targetX)).toFixed(2);
 
-      setResultInterpolation({
-        label: [...rowsGroupByYLabels.map((row) => row.label), `${targetXLabel}`],
-        series: [...rowsGroupByYLabels.map((row) => row.mean!), result].map((value) => +Number(value).toFixed(2))
-      });
+          rowsGroupByYLabels.push({
+            data: [],
+            label: targetXLabel,
+            mean: result
+          });
+
+          setResultInterpolation({
+            label: rowsGroupByYLabels.map((row) => row.label),
+            series: rowsGroupByYLabels.map((row) => row.mean!).map((value) => +Number(value).toFixed(2))
+          });
+        });
 
       setCalculateLoading(false);
       toast.success('Data berhasil di interpolasikan!')

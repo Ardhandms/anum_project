@@ -1,9 +1,7 @@
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
-  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
@@ -19,14 +17,17 @@ import {
 } from "@/components/ui/select"
 import { Button } from "@/components/ui/button";
 import { VscLoading } from "react-icons/vsc";
+import { useState } from "react";
 
 type PropTypes = {
   data: string[][];
-  onClickCalculate: (data: string[][]) => void;
+  onClickCalculate: (data: string[][], totalInterpolation: number) => void;
   loading: boolean;
 }
 
 function Preview({ data, onClickCalculate, loading }: PropTypes) {
+  const [totalInterpolationInput, setTotalInterpolationInput] = useState(1);
+
   const [header, ...rows] = data;
   return (
     <div className="space-y-3">
@@ -58,22 +59,26 @@ function Preview({ data, onClickCalculate, loading }: PropTypes) {
         </Table>
       </div>
       <div className="w-full flex justify-end gap-4 pt-2">
-        {/* <Select>
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Select a option" />
+        <Select value={`${totalInterpolationInput}`} onValueChange={(value) => setTotalInterpolationInput(+value)}>
+          <SelectTrigger className="w-full max-w-[200px]">
+            <SelectValue placeholder="Pilih jumlah interpolasi" />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
-              <SelectLabel>Options</SelectLabel>
-              <SelectItem value="apple">Option 1</SelectItem>
-              <SelectItem value="banana">Option 2</SelectItem>
-              <SelectItem value="blueberry">Option 3</SelectItem>
-              <SelectItem value="grapes">Option 4</SelectItem>
-              <SelectItem value="pineapple">Option 5</SelectItem>
+              <SelectLabel>Jumlah Interpolasi</SelectLabel>
+              {Array.from({ length: 10 }).map((_, index) => (
+                <SelectItem key={`option-${index + 1}`} value={`${index + 1}`}>
+                  {index + 1}
+                </SelectItem>
+              ))}
             </SelectGroup>
           </SelectContent>
-        </Select> */}
-        <Button disabled={loading} className="gap-2" onClick={() => onClickCalculate(data)}>
+        </Select>
+        <Button
+          disabled={loading}
+          className="gap-2"
+          onClick={() => onClickCalculate(data, totalInterpolationInput)}
+        >
           {loading ? (
             <>
               <VscLoading className="animate-spin" /> Menghitung...
